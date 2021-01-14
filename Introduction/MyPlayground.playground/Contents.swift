@@ -118,3 +118,67 @@ enum Planet: Int {
     case mars
 }
 let earth = Planet(rawValue: 2)
+
+// Operators and conditions -------------------------
+// Operator overloading
+let meaningOfLife = 42
+let doubleMeaning = 42 + 42
+let fakers = "Fakers gonna "
+let action = fakers + "fake"
+let firstHalf = ["John", "Paul"]
+let secondHalf = ["George", "Ringo"]
+let beatles2 = firstHalf + secondHalf
+
+// Compoud assignment operators
+var quote = "The rain in Spain falls mainly on the "
+quote += "Spaniards"
+
+// Comparision Operators
+"Taylor" <= "Swift"
+
+// Switch statements
+let weather = "sunny"
+
+switch weather {
+case "rain":
+    print("Bring an umbrella")
+case "snow":
+    print("Wrap up warm")
+case "sunny":
+    print("Wear sunscreen")
+    fallthrough
+default:
+    print("Enjoy your day!")
+}
+
+// Range operators
+// Swift gives us two ways of making ranges: the ..< and ... operators.
+// the range 1..<5 contains the numbers 1, 2, 3, and 4, whereas the range 1...5 contains the numbers 1, 2, 3, 4, and 5.
+let score2 = 85
+
+switch score2 {
+case 0..<50:
+    print("You failed badly.")
+case 50..<85:
+    print("You did OK.")
+default:
+    print("You did great!")
+}
+
+let names = ["Piper", "Alex", "Suzanne", "Gloria"]
+print(names[0])
+print(names[1...3])
+print(names[1...])
+
+// Why can’t Swift add a Double to an Int?
+// In this example, we lose some accuracy
+let value: Double = 90000000000000001
+let value2: Int = 90000000000000001
+
+// Why does Swift have a dedicated division remainder operator?
+let weeks = 465 / 7
+let days = 465 % 7
+print("There are \(weeks) weeks and \(days) days until the event.")
+
+let number = 465
+let isMultiple = number.isMultiple(of: 7)
