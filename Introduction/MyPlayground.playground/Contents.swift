@@ -43,7 +43,7 @@ let taylorRocks: Bool = true
 var str5: String
 str5 = "Prachanda"
 
-// Complex Types
+// Complex Types -----------------------------------------------------------------------------------------------------------------------------
 // Arrays
 // Note: If you're using type annotations, arrays are written in brackets: [String], [Int], [Double], [Bool].
 let john = "John Lennon"
@@ -119,7 +119,7 @@ enum Planet: Int {
 }
 let earth = Planet(rawValue: 2)
 
-// Operators and conditions -------------------------
+// Operators and conditions -----------------------------------------------------------------------------------------------------------------------------
 // Operator overloading
 let meaningOfLife = 42
 let doubleMeaning = 42 + 42
@@ -182,3 +182,74 @@ print("There are \(weeks) weeks and \(days) days until the event.")
 
 let number = 465
 let isMultiple = number.isMultiple(of: 7)
+
+// Loops ---------------------------------------------------------------------------------------------------------------------------------------------
+// For loops : it will loop over arrays and ranges
+let count = 1...10
+for number in count {
+    print("Number is \(number)")
+}
+
+print ("Players gonna ")
+for _ in 1...5 {
+    print("play")
+}
+
+// While Loops
+var number2 = 1
+while number2 <= 20 {
+    print(number2)
+    number2 += 1
+}
+print("Ready or not, here I come!")
+
+// Repeat Loops
+var number3 = 1
+repeat {
+    print(number3)
+    number3 += 1
+} while number3 <= 20
+print("Ready or not, here I come!")
+
+let numbers2 = [1, 2, 3, 4, 5]
+var random: [Int]
+
+repeat {
+    random = numbers2.shuffled()
+} while random == numbers2
+
+// Exiting Loops
+var countDown = 10
+while countDown >= 0 {
+    print(countDown)
+
+    if countDown == 4 {
+        print("I'm bored. Let's go now!")
+        break
+    }
+
+    countDown -= 1
+}
+print("Blast off!")
+
+// Exiting multiple loops
+outerLoop: for i in 1...10 {
+    for j in 1...10 {
+        let product = i * j
+        print ("\(i) * \(j) is \(product)")
+
+        if product == 50 {
+            print("It's a bullseye!")
+            break outerLoop
+        }
+    }
+}
+
+// Skipping items
+for i in 1...10 {
+    if i % 2 == 1 {
+        continue
+    }
+
+    print(i)
+}
