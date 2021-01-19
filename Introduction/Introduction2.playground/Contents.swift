@@ -257,3 +257,94 @@ print(sum)
 let sum2 = reduce(numbers, using: +)
 // Third, this reduce() function is so important that a variant actually comes with Swift as standard. The concept is the same, but it’s more advanced in several ways
 
+// Structs, properties and methods -------------------------------------------------------------------------------------------------------------------------------
+// That has a name property that stores a String. These are called "stored properties", because Swift has a different kind of property called a "computed property" – a property that runs code to figure out its value.
+struct Sport {
+    var name: String
+    var isOlympicSport: Bool
+
+    var olympicStatus: String {
+        if isOlympicSport {
+            return "\(name) is an Olympic sport"
+        } else {
+            return "\(name) is not an Olympic sport"
+        }
+    }
+}
+var tennis = Sport(name: "Tennis", isOlympicSport: true)
+print(tennis.name)
+tennis.name = "Lawn tennis"
+
+let chessBoxing = Sport(name: "Chessboxing", isOlympicSport: false)
+print(chessBoxing.olympicStatus)
+
+// Property observers
+// Property observers let you run code before or after any property changes.
+// didSet, willSet
+// You can also use willSet to take action before a property changes, but that is rarely used.
+struct Progress {
+    var task: String
+    var amount: Int {
+        didSet {
+            print("\(task) is now \(amount)% complete")
+        }
+    }
+}
+
+var progress = Progress(task: "Loading data", amount: 0)
+progress.amount = 30
+progress.amount = 80
+progress.amount = 100
+
+// Methods
+struct City {
+    var population: Int
+
+    func collectTaxes() -> Int {
+        return population * 1000
+    }
+}
+
+let london = City(population: 9_000_000)
+london.collectTaxes()
+
+// Mutating methods
+// Swift won’t let you write methods that change properties unless you specifically request it.
+struct Person {
+    var name: String
+
+    mutating func makeAnonymous() {
+        name = "Anonymous"
+    }
+}
+
+var person = Person(name: "Ed")
+person.makeAnonymous()
+
+// Properties and methods of strings
+// Strings are structs
+let string = "Do or do not, there is no try."
+print(string.count)
+print(string.hasPrefix("Do"))
+print(string.uppercased())
+print(string.sorted())
+
+// Properties and methods of arrays
+var toys = ["Woody"]
+print(toys.count)
+toys.append("Buzz")
+toys.firstIndex(of: "Buzz")
+print(toys.sorted())
+toys.remove(at: 0)
+
+// What’s the difference between a struct and a tuple?
+// use tuples when you want to return two or more arbitrary pieces of values from a function, but prefer structs when you have some fixed data you want to send or receive multiple times.
+
+// When should you use willSet rather than didSet?
+// For example, SwiftUI uses willSet in some places to handle animations so that it can take a snapshot of the user interface before a change. When it has both the “before” and “after” snapshot, it can compare the two to see all the parts of the user interface that need to be updated.
+
+// Why do strings behave differently from arrays in Swift?
+// Swift lets us read array values using myArray[3], we can’t do the same with strings – myString[3] is invalid.
+// Note: if you want to check whether a string is empty, you should write this: 'myString.isEmpty' instead of 'myString.count == 0'
+// second one is slow
+
