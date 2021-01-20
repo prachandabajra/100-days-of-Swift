@@ -348,3 +348,113 @@ toys.remove(at: 0)
 // Note: if you want to check whether a string is empty, you should write this: 'myString.isEmpty' instead of 'myString.count == 0'
 // second one is slow
 
+// Access control, static properties and laziness ---------------------------------------------------------------------------------------------------------
+// Initializers
+// Initializers are special methods that provide different ways to create your struct. All structs come with one by default, called their memberwise initializer – this asks you to provide a value for each property when you create the struct.
+struct User {
+    var username: String
+
+    init() {
+        username = "Anonymous"
+        print("Creating a new user!")
+    }
+}
+var user2 = User()
+user2.username = "twostraws"
+
+// Self
+struct Person2 {
+    var name: String
+
+    init(name: String) {
+        print("\(name) was born!")
+        self.name = name
+    }
+}
+
+// Lazy properties
+struct FamilyTree {
+    init() {
+        print("Creating family tree!")
+    }
+}
+
+struct Person3 {
+    var name: String
+    lazy var familyTree = FamilyTree()
+
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var ed = Person3(name: "Ed")
+ed.familyTree
+
+// Static properties and methods
+struct Student {
+    static var classSize = 0
+    var name: String
+
+    init(name: String) {
+        self.name = name
+        Student.classSize += 1
+    }
+}
+
+let ed2 = Student(name: "Ed")
+let taylor = Student(name: "Taylor")
+print(Student.classSize)
+
+// Access control
+// Access control lets you restrict which code can use properties and methods
+// Keywords: private, public
+struct Person4 {
+    private var id: String
+
+    init(id: String) {
+        self.id = id
+    }
+    
+    func identify() -> String {
+           return "My social security number is \(id)"
+       }
+}
+let ed3 = Person4(id: "12345")
+print(ed3.identify())
+
+// How do Swift’s memberwise initializers work?
+struct Employee {
+    var name: String
+    var yearsActive = 0
+}
+
+let roslin = Employee(name: "Laura Roslin")
+let adama = Employee(name: "William Adama", yearsActive: 45)
+
+// The second clever thing Swift does is remove the memberwise initializer if you create an initializer of your own.
+// So, as soon as you add a custom initializer for your struct, the default memberwise initializer goes away. If you want it to stay, move your custom initializer to an extension, like this:
+struct Employee2 {
+    var name: String
+    var yearsActive = 0
+}
+
+extension Employee2 {
+    init() {
+        self.name = "Anonymous"
+        print("Creating an anonymous employee…")
+    }
+}
+
+// creating a named employee now works
+let roslin2 = Employee2(name: "Laura Roslin")
+
+// as does creating an anonymous employee
+let anon = Employee2()
+
+// When should properties be lazy?
+// There are a few reasons why you would prefer stored or computed properties over a lazy property, such as:
+// i) Using lazy properties can accidentally produce work where you don’t expect it. For example, if you’re building a game and access a complex lazy property for the first time it might cause your game to slow down, so it’s much better to do slow work up front and get it out of the way.
+// ii) Lazy properties always store their result, which might either be unnecessary (because you aren’t use it again) or be pointless (because it needs to be recalculated frequently).
+// iii) Because lazy properties change the underlying object they are attached to, you can’t use them on constant structs.
+
