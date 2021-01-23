@@ -266,3 +266,133 @@ let allEven3 = numbers3.allSatisfy { $0.value.isMultiple(of: 2) }
 // Getting down to the raw facts, there is no practical difference between the two: both can place functionality into objects, use access control to limit where that functionality can be called, make one class inherit from another, and more.
 // In fact, the only important difference between the two is one of mindset: POP developers lean heavily on the protocol extension functionality of Swift to build types that get a lot of their behavior from protocols. This makes it easier to share functionality across many types, which in turn lets us build bigger, more powerful software without having to write so much code.
 
+// Optionals, unwrapping, and typecasting ----------------------------------------------------------------------------------------------------------------
+// Optionals
+var age: Int? = nil
+age = 38
+
+// Unwrapping optionals
+var name: String? = nil
+
+if let unwrapped = name {
+    print("\(unwrapped.count) letters")
+} else {
+    print("Missing name.")
+}
+
+// Unwrapping with guard
+// An alternative to if let is guard let, which also unwraps optionals. guard let will unwrap an optional for you, but if it finds nil inside it expects you to exit the function, loop, or condition you used it in.
+
+// However, the major difference between if let and guard let is that your unwrapped optional remains usable after the guard code.
+func greet(_ name: String?) {
+    guard let unwrapped = name else {
+        print("You didn't provide a name!")
+        return
+    }
+
+    print("Hello, \(unwrapped)!")
+}
+
+greet(nil)
+
+// Force unwrapping
+// the crash operator
+let str = "5"
+//let num = Int(str)
+let num = Int(str)!
+
+// Implicitly unwrapped optionals
+// Like regular optionals, implicitly unwrapped optionals might contain a value or they might be nil. However, unlike regular optionals you don’t need to unwrap them in order to use them: you can use them as if they weren’t optional at all.
+// Because they behave as if they were already unwrapped, you don’t need if let or guard let to use implicitly unwrapped optionals. However, if you try to use them and they have no value – if they are nil – your code crashes.
+let age2: Int! = nil
+
+// Nil coalescing
+// The nil coalescing operator unwraps an optional and returns the value inside if there is one. If there isn’t a value – if the optional was nil – then a default value is used instead.
+func username(for id: Int) -> String? {
+    if id == 1 {
+        return "Taylor Swift"
+    } else {
+        return nil
+    }
+}
+
+let user = username(for: 15) ?? "Anonymous"
+
+// Optional chaining
+// That question mark is optional chaining – if first returns nil then Swift won’t try to uppercase it, and will set beatle to nil immediately.
+let names = ["John", "Paul", "George", "Ringo"]
+let beatle = names.first?.uppercased()
+
+// Optional try
+// Back when we were talking about throwing functions, we looked at this code:
+enum PasswordError: Error {
+    case obvious
+}
+
+func checkPassword(_ password: String) throws -> Bool {
+    if password == "password" {
+        throw PasswordError.obvious
+    }
+
+    return true
+}
+
+do {
+    try checkPassword("password")
+    print("That password is good!")
+} catch {
+    print("You can't use that password.")
+}
+
+// That runs a throwing function, using do, try, and catch to handle errors gracefully.
+// There are two alternatives to try, both of which will make more sense now that you understand optionals and force unwrapping.
+// The first is try?, and changes throwing functions into functions that return an optional. If the function throws an error you’ll be sent nil as the result, otherwise you’ll get the return value wrapped as an optional.
+// Using try? we can run checkPassword() like this:
+if let result = try? checkPassword("password") {
+    print("Result was \(result)")
+} else {
+    print("D'oh.")
+}
+
+// The other alternative is try!, which you can use when you know for sure that the function will not fail. If the function does throw an error, your code will crash.
+// Using try! we can rewrite the code to this:
+try! checkPassword("sekrit")
+print("OK!")
+
+// Failable initializers
+// When talking about force unwrapping, I used this code:
+// let str = "5"
+// let num = Int(str)
+// That converts a string to an integer, but because you might try to pass any string there what you actually get back is an optional integer.
+// This is a failable initializer: an initializer that might work or might not. You can write these in your own structs and classes by using init?() rather than init(), and return nil if something goes wrong. The return value will then be an optional of your type, for you to unwrap however you want.
+// As an example, we could code a Person struct that must be created using a nine-letter ID string. If anything other than a nine-letter string is used we’ll return nil, otherwise we’ll continue as normal.
+struct Person2 {
+    var id: String
+
+    init?(id: String) {
+        if id.count == 9 {
+            self.id = id
+        } else {
+            return nil
+        }
+    }
+}
+var person2 = Person2(id: "fdfkjd")
+
+// Typecasting
+class Animal { }
+class Fish: Animal { }
+
+class Dog3: Animal {
+    func makeNoise() {
+        print("Woof!")
+    }
+}
+
+let pets = [Fish(), Dog3(), Fish(), Dog3()]
+
+for pet in pets {
+    if let dog = pet as? Dog3 {
+        dog.makeNoise()
+    }
+}
