@@ -396,3 +396,60 @@ for pet in pets {
         dog.makeNoise()
     }
 }
+
+
+// Why does Swift make us unwrap optionals?
+// The single most important feature of optionals is that Swift won’t let us use them without unwrapping them first. This provides a huge amount of protection for all our apps, because it puts a stop to uncertainty: when you’re handing a string you know it’s a valid string, when you call a function that returns an integer, you know it’s immediately safe to use. And when you do have optionals in your code, Swift will always make sure you handle them correctly – that you check and unwrap them, rather than just mixing unsafe values with known safe data.
+
+// When to use "guard let" rather than "if let"?
+// It’s common to see guard used one or more times at the start of methods, because it’s used to verify conditions are correct up front. This makes our code easier to read than if we tried to check a condition then run some code, then check another condition and run some different code.
+// So, use if let if you just want to unwrap some optionals, but prefer guard let if you’re specifically checking that conditions are correct before continuing.
+
+// When should you force unwrap optionals in Swift?
+// So, I think force unwrapping is sometimes a good idea, and sometimes even required. However, I am not advocating that you start scattering exclamation marks around your program, because that starts to get messy.
+// Instead, a better idea is to create a handful of functions and extensions that isolate your force unwraps in one place. This means your force unwrapping can be stored near to the place where its behavior is clarified, and the vast majority of your code doesn’t need to force unwrap directly.
+enum Direction: CaseIterable {
+    case north, south, east, west
+
+    static func random() -> Direction {
+        Direction.allCases.randomElement()!
+    }
+}
+// With that in place, everywhere we need to get a random direction no longer needs a force unwrap:
+let randomDirection = Direction.random()
+
+// Why does Swift need both implicitly unwrapped optionals and regular optionals?
+// In the earlier days of Swift, implicitly unwrapped optionals (IUOs) played a critical part in making our code work. However, since SwiftUI launched they are disappearing by the thousand. That’s not to say they are useless, only that they are becoming much more rare.
+// The primary reason for IUOs is for use with Apple’s older UIKit user interface framework. If you wanted an image in your layout you’d need to create a property for it, but that image wouldn’t be created immediately – UIKit has a performance optimization that means the image is only created when that piece of user interface is actually shown. Apple pushes back the work of creating the image until it’s actually needed, like a lazy Swift property, but in practice it means the variable starts as nil then gets set to an image as soon as it’s needed, at which point we can start using it.
+
+// When should you use nil coalescing in Swift?
+// Nil coalescing lets us attempt to unwrap an optional, but provide a default value if the optional contains nil. This is extraordinarily useful in Swift, because although optionals are a great feature it’s usually better to have a non-optional – to have a real string rather than a “might be a string, might be nil” – and nil coalescing is a great way to get that.
+
+// Why is optional chaining so important?
+// Optional chaining makes for a very good companion to nil coalescing, because it allows you to dig through layers of optionals while also providing a sensible fall back if any of the optionals are nil.
+let names2 = ["Vincent": "van Gogh", "Pablo": "Picasso", "Claude": "Monet"]
+let surnameLetter = names2["Vincent"]?.first?.uppercased() ?? "?"
+
+// When should you use optional try?
+// There are advantages and disadvantages to using optional try, but it mostly centers around how important the error is to you. If you want to run a function and care only that it succeeds or fails – you don’t need to distinguish between the various reasons why it might fail – then using optional try is a great fit, because you can boil the whole thing down to “did it work?”
+
+// Why would you want a failable initializer?
+struct Employee2 {
+    var username: String
+    var password: String
+
+    init?(username: String, password: String) {
+        guard password.count >= 8 else { return nil }
+        guard password.lowercased() != "password" else { return nil }
+
+        self.username = username
+        self.password = password
+    }
+}
+
+let tim = Employee2(username: "TimC", password: "app1e")
+let craig = Employee2(username: "CraigF", password: "ha1rf0rce0ne")
+// Failable initializers give us the opportunity to back out of an object’s creation if validation checks fail. In the previous case that was a password that was too short, but you could also check whether the username was taken already, whether the password was the same as the username, and so on.
+// Yes, you could absolutely put these checks into a separate method, but it’s much safer to put them into the initializer – it’s too easy to forget to call the other method, and there’s no point leaving that hole open.
+
+
