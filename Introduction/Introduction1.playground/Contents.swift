@@ -54,6 +54,19 @@ let ringo = "Ringo Starr"
 let beatles = [john, paul, george, ringo]
 beatles[1]
 
+// Swift review, day one
+var songs: [String] = ["Shake it Off", "You Belong with Me", "Back to December"]
+type(of: songs)
+var songs2: [Any] = ["Shake it Off", "You Belong with Me", "Back to December", 3]
+//Creating Arrays
+var songs3: [String] = []
+var songs4 = [String]()
+// Array Operators
+var songs5 = ["Shake it Off", "You Belong with Me", "Love Story"]
+var songs6 = ["Today was a Fairytale", "Welcome to New York", "Fifteen"]
+var both = songs5 + songs6
+both += ["Everything has Changed"]
+
 // Sets
 let colors = Set(["red", "green", "blue"])
 let colors2 = Set(["red", "green", "blue", "red", "blue"])
