@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     var countries = [String]()
     var score = 0
     var correctAnswer = 0
+    var count = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +46,8 @@ class ViewController: UIViewController {
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         
-        title = countries[correctAnswer].uppercased()
+        count += 1
+        title = "\(count). | \(countries[correctAnswer].uppercased())? | Score: \(score)"
     }
 
     //  The event used for the attachment is called TouchUpInside
@@ -57,15 +59,28 @@ class ViewController: UIViewController {
             title = "Correct"
             score += 1
         } else {
-            title = "Wrong"
+            title = "Wrong! That's the flag of \(countries[sender.tag].uppercased())"
             score -= 1
         }
         
-        let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
+        if (count == 10) {
+            let ac = UIAlertController(title: title, message: "Your final score is \(score)", preferredStyle: .alert)
         
-        ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
         
-        present(ac, animated: true)
+            ac.addAction(UIAlertAction(title: "Play Again", style: .default) { _ in
+                self.count = 0
+                self.score = 0
+                self.askQuestion()
+            })
+            
+            present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
+            
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+            
+            present(ac, animated: true)
+        }
     }
     
 }
