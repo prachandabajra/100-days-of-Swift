@@ -17,10 +17,19 @@ class ViewController: UIViewController {
     var score = 0
     var correctAnswer = 0
     var count = 0
+    var showScore = false
+    var customButton = UIBarButtonItem.init()
+    var customButton2 = UIBarButtonItem.init()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("showScore")
         
+        customButton = UIBarButtonItem(title: "Show", style: .done, target: self, action: #selector(showScoreTapped))
+        customButton2 = UIBarButtonItem(title: "Hide", style: .done, target: self, action: #selector(showScoreTapped))
+        navigationItem.rightBarButtonItem = customButton
+        
+
         countries += ["estonia", "france", "germany", "ireland", "italy", "monaco", "nigeria", "poland", "russia", "spain", "uk", "us"]
        
         // CALayer
@@ -47,7 +56,7 @@ class ViewController: UIViewController {
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         
         count += 1
-        title = "\(count). | \(countries[correctAnswer].uppercased())? | Score: \(score)"
+        title = "\(count). | \(countries[correctAnswer].uppercased())?"
     }
 
     //  The event used for the attachment is called TouchUpInside
@@ -83,5 +92,16 @@ class ViewController: UIViewController {
         }
     }
     
+    @objc func showScoreTapped() {
+        showScore = !showScore
+    
+        if (showScore) {
+            navigationItem.rightBarButtonItem = customButton2
+            title = "\(count). | \(countries[correctAnswer].uppercased())? | Score: \(score)"
+        } else {
+            navigationItem.rightBarButtonItem = customButton
+            title =  "\(count). | \(countries[correctAnswer].uppercased())?"
+        }
+    }
 }
 

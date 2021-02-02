@@ -17,8 +17,6 @@ class ViewController: UITableViewController {
         title = "Storm Viewer"
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
-        
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
         let items = try! fm.contentsOfDirectory(atPath: path)
@@ -55,15 +53,6 @@ class ViewController: UITableViewController {
             // 3: now push it onto the navigation controller
             navigationController?.pushViewController(vc, animated: true)
         }
-    }
-    
-    @objc func shareTapped() {
-        let appURL: URL = URL(string: "https://www.google.com/")!
-        let items = [appURL]
-        
-        let vc = UIActivityViewController(activityItems: items, applicationActivities: [])
-        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(vc, animated: true)
     }
 }
 
