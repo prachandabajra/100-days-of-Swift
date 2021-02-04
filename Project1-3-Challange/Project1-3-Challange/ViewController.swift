@@ -22,15 +22,6 @@ class ViewController: UITableViewController {
         let path = Bundle.main.resourcePath!
         let items = try! fm.contentsOfDirectory(atPath: path)
         
-//        let url = Bundle.main.bundleURL
-//        let items2 = try fm.contentsOfDirectory(at: url.appendingPathComponent("flags"), includingPropertiesForKeys: [URLResourceKey.nameKey], options: .skipsHiddenFiles)
-        
-//        print("item2 \(items2)")
-//        print(url.appendingPathComponent("flags"))
-//        print("path\(path.appending("flags"))")
-        
-//        print(items)
-        
         for item in items {
             if item.contains("@2x") {
                 flags.append(item)
