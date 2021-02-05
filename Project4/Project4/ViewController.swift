@@ -12,6 +12,8 @@ import WebKit
 // ViewController inherits from UIViewController class and conforms to WKNavigationDelegate protocol.
 class ViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
+    var progressView: UIProgressView!
+    let websites = ["apple.com", "hackingwithswift.com"]
 
     override func loadView() {
         webView = WKWebView()
@@ -24,15 +26,34 @@ class ViewController: UIViewController, WKNavigationDelegate {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
         
-        let url = URL(string: "https://www.hackingwithswift.com")!
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
+        
+        progressView = UIProgressView(progressViewStyle: .default)
+        progressView.sizeToFit()
+        let progressButton = UIBarButtonItem(customView: progressView)
+        
+        toolbarItems = [progressButton, spacer, refresh]
+        navigationController?.isToolbarHidden = false
+        
+        // forKeyPath isn't named forProperty because it's not just about entering a property name. You can actually specify a path: one property inside another, inside another, and so on. More advanced key paths can even add functionality, such as averaging all elements in an array!
+        // Swift has a special keyword, #keyPath, which works like the #selector keyword you saw previously: it allows the compiler to check that your code is correct – that the WKWebView class actually has an estimatedProgress property.
+        // context is easier: if you provide a unique value, that same context value gets sent back to you when you get your notification that the value has changed. This allows you to check the context to make sure it was your observer that was called. There are some corner cases where specifying (and checking) a context is required to avoid bugs, but you won't reach them during any of this series.
+        // Warning: in more complex applications, all calls to addObserver() should be matched with a call to removeObserver() when you're finished observing – for example, when you're done with the view controller.
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+        
+        let url = URL(string: "https://" +  websites[0])!
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
     }
 
     @objc func openTapped() {
         let ac = UIAlertController(title: "Open page...", message: nil, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "apple.com", style: .default, handler: openPage))
-        ac.addAction(UIAlertAction(title: "hackingwithswift.com", style: .default, handler: openPage))
+        
+        for website in websites {
+            ac.addAction(UIAlertAction(title: website, style: .default, handler: openPage))
+        }
+
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         ac.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         present(ac, animated: true)
@@ -53,5 +74,30 @@ class ViewController: UIViewController, WKNavigationDelegate {
         title = webView.title
     }
 
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "estimatedProgress" {
+            //  estimatedProgress is a Double
+            progressView.progress = Float(webView.estimatedProgress)
+        }
+    }
+    
+    // This delegate callback allows us to decide whether we want to allow navigation to happen or not every time something happens. We can check which part of the page started the navigation, we can see whether it was triggered by a link being clicked or a form being submitted, or, in our case, we can check the URL to see whether we like it.
+    // This decisionHandler is also a closure, except it's the other way around – rather than giving someone else a chunk of code to execute, you're being given it and are required to execute it.
+    // Because you might call the decisionHandler closure straight away, or you might call it later on (perhaps after asking the user what they want to do), Swift considers it to be an escaping closure. That is, the closure has the potential to escape the current method, and be used at a later date.
+    // Because of this, Swift wants us to add the special keyword @escaping when specifying this method
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        let url = navigationAction.request.url
+        
+        if let host = url?.host {
+            for website in websites {
+                if host.contains(website) {
+                    decisionHandler(.allow)
+                    return
+                }
+            }
+        }
+        
+        decisionHandler(.cancel)
+    }
 }
 
