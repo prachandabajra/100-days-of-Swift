@@ -13,7 +13,8 @@ import WebKit
 class ViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
     var progressView: UIProgressView!
-    let websites = ["apple.com", "hackingwithswift.com"]
+    var websites = [String]()
+    var selectedWebsite = String()
 
     override func loadView() {
         webView = WKWebView()
@@ -24,6 +25,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
         
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -33,7 +35,10 @@ class ViewController: UIViewController, WKNavigationDelegate {
         progressView.sizeToFit()
         let progressButton = UIBarButtonItem(customView: progressView)
         
-        toolbarItems = [progressButton, spacer, refresh]
+        let goBack = UIBarButtonItem(title: "Back", style: .plain, target: webView, action: #selector(webView.goBack))
+        let goForward = UIBarButtonItem(title: "Forward", style: .plain, target: webView, action: #selector(webView.goForward))
+        
+        toolbarItems = [progressButton, spacer, goBack, spacer, refresh, spacer, goForward]
         navigationController?.isToolbarHidden = false
         
         // forKeyPath isn't named forProperty because it's not just about entering a property name. You can actually specify a path: one property inside another, inside another, and so on. More advanced key paths can even add functionality, such as averaging all elements in an array!
@@ -42,7 +47,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         // Warning: in more complex applications, all calls to addObserver() should be matched with a call to removeObserver() when you're finished observing – for example, when you're done with the view controller.
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         
-        let url = URL(string: "https://" +  websites[0])!
+        let url = URL(string: "https://" +  selectedWebsite)!
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
     }
@@ -87,6 +92,8 @@ class ViewController: UIViewController, WKNavigationDelegate {
     // Because of this, Swift wants us to add the special keyword @escaping when specifying this method
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let url = navigationAction.request.url
+//        print (url?.absoluteString)
+//        guard let stringURL = url?.absoluteString else { return }
         
         if let host = url?.host {
             for website in websites {
@@ -98,6 +105,20 @@ class ViewController: UIViewController, WKNavigationDelegate {
         }
         
         decisionHandler(.cancel)
+               
+        guard let blockedUrl = url else {
+            return
+        }
+
+        if UIApplication.shared.canOpenURL(blockedUrl as URL) {
+            showWarning(alertTitle: "Blocked", alertMessage: "You are not allowed to visit \(blockedUrl)", alertAction: "Ok")
+        }
+    }
+    
+    func showWarning(alertTitle: String, alertMessage: String, alertAction: String) {
+        let ac = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: alertAction, style: .default))
+        present(ac, animated: true)
     }
 }
 
