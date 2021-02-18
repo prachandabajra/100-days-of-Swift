@@ -25,6 +25,8 @@ class ViewController: UIViewController {
     }
     var level = 1
     
+    var correctAnswer = 0
+    
     override func loadView() {
         // create the main view itself as a big and white empty space
         view = UIView()
@@ -75,6 +77,9 @@ class ViewController: UIViewController {
         
         let buttonsView = UIView()
         buttonsView.translatesAutoresizingMaskIntoConstraints = false
+        buttonsView.layer.borderWidth = 1
+        buttonsView.layer.borderColor = UIColor.lightGray.cgColor
+        buttonsView.layer.cornerRadius = 10
         view.addSubview(buttonsView)
         
         // Before we added the final buttons view, Auto Layout had no special idea of how big any of the views should be, so it used something called the intrinsic content size – how big each view needs to be to show its content. This resulted in our views being neatly arranged at the top. But now we have a complete vertical stack, pinned at the top and bottom, so UIKit needs to fill the space in between by stretching one or more of the views.
@@ -177,12 +182,20 @@ class ViewController: UIViewController {
             
             currentAnswer.text = ""
             score += 1
+            correctAnswer += 1
+           
             
-            if score % 7 == 0 {
+            if correctAnswer % 7 == 0 {
                 let ac = UIAlertController(title: "Well done!", message: "Are you ready for the next level?", preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "Let's go!", style: .default, handler: levelUp))
                 present(ac, animated: true)
             }
+        } else {
+            score -= 1
+            
+            let ac = UIAlertController(title: "Wrong!", message: "Your guess is incorrect.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
         }
     }
     
