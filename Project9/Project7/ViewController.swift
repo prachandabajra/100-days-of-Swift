@@ -149,7 +149,8 @@ class ViewController: UITableViewController {
         let submitAction = UIAlertAction(title: "Search", style: .default) {
             [weak self,weak ac] _ in
             let searchText = ac?.textFields?[0].text
-            self?.submit(searchText)
+//            self?.submit(searchText)
+            self?.performSelector(inBackground: #selector(self?.submit), with: searchText)
         }
        
         ac.addAction(submitAction)
@@ -166,13 +167,13 @@ class ViewController: UITableViewController {
         self.actionToEnable?.isEnabled = !(sender.text!.isEmpty)
     }
     
-    func submit(_ searchText: String?) {
+    @objc func submit(_ searchText: String?) {
         guard let searchText = searchText else {
             return
         }
         
-        title = searchText
-        
+       
+           
         // Using filter(isIncluded:)
         filteredPetitions = petitions.filter{
             $0.title.range(of: searchText, options: .caseInsensitive) != nil || $0.body.range(of: searchText, options: .caseInsensitive) != nil
@@ -188,7 +189,11 @@ class ViewController: UITableViewController {
 //                filteredPetitions.append(petition)
 //            }
 //        }
-        tableView.reloadData()
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.title = searchText
+            self?.tableView.reloadData()
+        }
     }
     
     @objc func cancelSearch() {

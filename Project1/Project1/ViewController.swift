@@ -19,6 +19,25 @@ class ViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
         
+//        let fm = FileManager.default
+//        let path = Bundle.main.resourcePath!
+//        let items = try! fm.contentsOfDirectory(atPath: path)
+//
+//        for item in items {
+//            if item.hasPrefix("nssl") {
+//                // this is a picture to load!
+//                pictures.append(item)
+//            }
+//        }
+//
+//        pictures = pictures.sorted()
+//        print(pictures)
+        
+        // Using performSelector(): from Project 9 challenge
+        performSelector(inBackground: #selector(loadImages), with: nil)
+    }
+    
+    @objc func loadImages() {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
         let items = try! fm.contentsOfDirectory(atPath: path)
@@ -32,6 +51,12 @@ class ViewController: UITableViewController {
         
         pictures = pictures.sorted()
         print(pictures)
+        
+        // Not using "weak self" because dispatch_async will only hold the block that retains self only till the block is executed. Also the code that calls dispatch_async do not hold any reference to its internals, so there are no risk of retain cycles.
+        // Source: https://stackoverflow.com/questions/26277371/swift-uitableview-reloaddata-in-a-closure
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
