@@ -14,6 +14,10 @@
 		07845F7C25E67AD6000623FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07845F7A25E67AD6000623FC /* Main.storyboard */; };
 		07845F7E25E67AD8000623FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07845F7D25E67AD8000623FC /* Assets.xcassets */; };
 		07845F8125E67AD8000623FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07845F7F25E67AD8000623FC /* LaunchScreen.storyboard */; };
+		07FD358E25E9EFC800A15C1B /* FireParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 07FD358D25E9EFC800A15C1B /* FireParticles.sks */; };
+		07FD359025EA175400A15C1B /* MyBokehParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 07FD358F25EA175400A15C1B /* MyBokehParticle.sks */; };
+		07FD359425EA182E00A15C1B /* MyFireParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 07FD359325EA182E00A15C1B /* MyFireParticle.sks */; };
+		07FD359625EA19A000A15C1B /* MySparkParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 07FD359525EA19A000A15C1B /* MySparkParticle.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		07845F7D25E67AD8000623FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07845F8025E67AD8000623FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		07845F8225E67AD8000623FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07FD358D25E9EFC800A15C1B /* FireParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireParticles.sks; sourceTree = "<group>"; };
+		07FD358F25EA175400A15C1B /* MyBokehParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MyBokehParticle.sks; sourceTree = "<group>"; };
+		07FD359325EA182E00A15C1B /* MyFireParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MyFireParticle.sks; sourceTree = "<group>"; };
+		07FD359525EA19A000A15C1B /* MySparkParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MySparkParticle.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +74,10 @@
 				07845F7D25E67AD8000623FC /* Assets.xcassets */,
 				07845F7F25E67AD8000623FC /* LaunchScreen.storyboard */,
 				07845F8225E67AD8000623FC /* Info.plist */,
+				07FD358D25E9EFC800A15C1B /* FireParticles.sks */,
+				07FD358F25EA175400A15C1B /* MyBokehParticle.sks */,
+				07FD359525EA19A000A15C1B /* MySparkParticle.sks */,
+				07FD359325EA182E00A15C1B /* MyFireParticle.sks */,
 			);
 			path = Project11;
 			sourceTree = "<group>";
@@ -128,10 +140,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07FD359625EA19A000A15C1B /* MySparkParticle.sks in Resources */,
 				07845F7C25E67AD6000623FC /* Main.storyboard in Resources */,
+				07FD359425EA182E00A15C1B /* MyFireParticle.sks in Resources */,
 				07845F7325E67AD6000623FC /* GameScene.sks in Resources */,
+				07FD358E25E9EFC800A15C1B /* FireParticles.sks in Resources */,
 				07845F7E25E67AD8000623FC /* Assets.xcassets in Resources */,
 				07845F8125E67AD8000623FC /* LaunchScreen.storyboard in Resources */,
+				07FD359025EA175400A15C1B /* MyBokehParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

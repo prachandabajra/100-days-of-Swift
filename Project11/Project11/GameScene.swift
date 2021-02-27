@@ -34,6 +34,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    var remainingBallsLabel: SKLabelNode!
+    var remainingBalls = 5 {
+        didSet {
+            remainingBallsLabel.text = "Balls Left: \(remainingBalls)"
+            
+//            if remainingBalls == 0 {
+//                // Delay a code
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // Change `2.0` to the desired number of seconds.
+//                    [weak self] in
+//                   // Code you want to be delayed
+//                    if self?.remainingBalls == 0 {
+//                        self?.tryAgainLabel.isHidden = false
+//                    }
+//                }
+//            }
+        }
+    }
+    
+    var tryAgainLabel: SKLabelNode!
+    var showTryAgain: Bool = false {
+        didSet {
+            if showTryAgain {
+                tryAgainLabel.isHidden = false
+            }
+        }
+    }
+    
     override func didMove(to view: SKView) {
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPoint(x: 512, y: 384)
@@ -51,6 +78,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         editLabel.text = "Edit"
         editLabel.position = CGPoint(x: 80, y: 700)
         addChild(editLabel)
+        
+        remainingBallsLabel = SKLabelNode(fontNamed: "Chalkduster")
+        remainingBallsLabel.text = "Balls Left: \(remainingBalls)"
+        remainingBallsLabel.horizontalAlignmentMode = .center
+        remainingBallsLabel.position = CGPoint(x: 512, y: 700)
+        addChild(remainingBallsLabel)
+        
+        tryAgainLabel = SKLabelNode(fontNamed: "Chalkduster")
+        tryAgainLabel.text = "Try Again!"
+        tryAgainLabel.fontSize = 48
+        tryAgainLabel.horizontalAlignmentMode = .center
+        tryAgainLabel.position = CGPoint(x: 512, y: 384)
+        tryAgainLabel.isHidden = true
+        addChild(tryAgainLabel)
         
         physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
         
@@ -74,8 +115,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first {
             let location = touch.location(in: self)
             let objects = nodes(at: location)
+            print("obj \(objects)")
             
-            if objects.contains(editLabel) {
+            if objects.contains(tryAgainLabel) {
+                remainingBalls = 5
+                score = 0
+                tryAgainLabel.isHidden = true
+            } else if objects.contains(editLabel) {
                 // editingMode = !editingMode
                 editingMode.toggle()
             } else {
@@ -85,14 +131,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     let box = SKSpriteNode(color: UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1), size: size)
                     box.zRotation = CGFloat.random(in: 0...3)
                     box.position = location
+                    box.name = "box"
                     
                     box.physicsBody = SKPhysicsBody(rectangleOf: size)
                     box.physicsBody?.isDynamic = false
                     
                     addChild(box)
-                } else if location.y > 550 {
+                } else if location.y > 550 && remainingBalls > 0 {
                     // create a ball
-                    let ball = SKSpriteNode(imageNamed: "ballRed")
+                    let ballImages = ["ballRed", "ballCyan", "ballYellow", "ballBlue", "ballGreen", "ballGrey", "ballPurple"]
+                    let ball = SKSpriteNode(imageNamed: ballImages.randomElement()!)
                     ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
                     ball.physicsBody?.contactTestBitMask = ball.physicsBody?.collisionBitMask ?? 0
                     // Restitution affects the 'bounciness' of a physicsBody
@@ -100,6 +148,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.position = location
                     ball.name = "ball"
                     addChild(ball)
+                    
+                    remainingBalls -= 1
                 }
             }
         }
@@ -146,14 +196,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if object.name == "good" {
             destroy(ball: ball)
             score += 1
+            remainingBalls += 1
         } else if object.name == "bad" {
             destroy(ball: ball)
             score -= 1
+        } else if object.name == "box" {
+            destroyObject(object: object)
         }
     }
     
     func destroy(ball: SKNode) {
+        if let fireParticles = SKEmitterNode(fileNamed: "FireParticles") {
+            fireParticles.position = ball.position
+            addChild(fireParticles)
+        }
         ball.removeFromParent()
+    }
+    
+    func destroyObject(object: SKNode) {
+        object.removeFromParent()
     }
     
     // Before I move on, I want to return to my philosophical question from earlier: “did the ball hit the slot, did the slot hit the ball, or did both happen?” That last case won’t happen all the time, but it will happen sometimes, and it’s important to take it into account.
@@ -171,6 +232,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             collisionBetween(ball: nodeA, object: nodeB)
         } else if nodeB.name == "ball" {
             collisionBetween(ball: nodeB, object: nodeA)
+        }
+    }
+    
+    override func didFinishUpdate() {
+        guard let _ = scene?.childNode(withName: "ball") else {
+            if remainingBalls == 0 {
+                showTryAgain = true
+            }
+            return
         }
     }
 }
