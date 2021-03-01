@@ -21,6 +21,9 @@ class ViewController: UIViewController {
     var customButton = UIBarButtonItem.init()
     var customButton2 = UIBarButtonItem.init()
     
+    // Project12 challenge
+    var highScore = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("showScore")
@@ -45,6 +48,8 @@ class ViewController: UIViewController {
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
         askQuestion()
+        
+        readHighScore()
     }
     
     func askQuestion(action: UIAlertAction! = nil) {
@@ -56,7 +61,12 @@ class ViewController: UIViewController {
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         
         count += 1
-        title = "\(count). | \(countries[correctAnswer].uppercased())?"
+        
+        if showScore {
+            title = "\(count). | \(countries[correctAnswer].uppercased())? | Score: \(score)"
+        } else {
+            title = "\(count). | \(countries[correctAnswer].uppercased())?"
+        }
     }
 
     //  The event used for the attachment is called TouchUpInside
@@ -73,7 +83,14 @@ class ViewController: UIViewController {
         }
         
         if (count == 10) {
-            let ac = UIAlertController(title: title, message: "Your final score is \(score)", preferredStyle: .alert)
+            var message =  "Your final score is \(score)"
+            if score > highScore {
+                message = "Congratulations! you have a new highscore: \(score)"
+                highScore = score
+                saveHighScore()
+            }
+            
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         
             ac.addAction(UIAlertAction(title: "Play Again", style: .default) { _ in
@@ -102,6 +119,20 @@ class ViewController: UIViewController {
             navigationItem.rightBarButtonItem = customButton
             title =  "\(count). | \(countries[correctAnswer].uppercased())?"
         }
+    }
+    
+    // UserDefaults
+    func readHighScore() {
+        let defaults = UserDefaults.standard
+        
+        // if nothing is saved, defaults.integer will return 0
+        highScore = defaults.integer(forKey: "highScore")
+    }
+    
+    func saveHighScore() {
+        let defaults = UserDefaults.standard
+        
+        defaults.set(highScore, forKey: "highScore")
     }
 }
 
