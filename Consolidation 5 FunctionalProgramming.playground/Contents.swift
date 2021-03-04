@@ -51,4 +51,75 @@ let dict = Dictionary(counts, uniquingKeysWith: +)
 let numbers1 = Array(1...100)
 let sum = numbers1.reduce(0, +)
 
+//https://vimeo.com/291590798
+/*
+ SYSTEM PROBLEMS
+User Defaults, keychain,
+Timers: strong reference(Memory leaks), invalidate, tolerance, Libraries:….
+timer Precesion, CADisplayLink
+let link = CADisplayLink(target: self, selector: #selector(update))
+link.add(to: .current, forMode: .commonModes)
+
+Attributed Strings: Use wrappers- Attributed, BOString, BonMot…
+Concurrency: To delay a code don’t use DispatchQueue.main.asyncAfter(deacline:.now ….
+Use perform()
+perform(#selector(log), with: “parameter”, afterDelay: 1)
+ 
+ func fibonacci(of num: Int) ->Int{}
+ var array = Array(0..<42)
+ DispatchQueue.concurrentPerform(iterations: array.count){
+    array[$0] = fibonaci(of: $0)
+ }
+ 
+ UI PROBLEMS
+ 4. Videos
+ ios sdk play movie
+ Don't use: MPMoviePlayerController
+ Use: AVPlayerViewController
+ 
+ 3. Image Views
+ load remote image into image views
+ Use libraries: SDWebImage, RemoteImageView, AlomofireImage, PINRemoteImage, Imaginary
+ 
+ 2. Web Views
+ WKWebView
+ 
+ 1. Auto Layout
+ AutoLayout wrapper: But still has problems
+ 
+ SWIFT PROBLEMS
+ 2. Strings
+ Use StaticStrings
+ URL(string:), UIImage(named:), UIColor(named:), NSRegularExpression(pattern:)
+ 
+ extension UIImage {
+    convenience init(bundleName: StaticString) {
+        self.init(named: "\(bundleName)")!
+    }
+ }
+ Here we can use force unwrap because of StaticString
+ 
+ 1. Optionals
+ let name: String! = "Han Solo"
+ let characterName = name
+// characterName is String?
+ So don't return optionals, return hard strings
+ 
+ enum PasswordError: Error {
+    case obvious
+ }
+ func encrypt(key: String) throws -> String {
+    if key == "12345" {
+        print("I have the same key on my luggage.")
+        throw PasswordError.obvious
+    }
+    return"Encryption complete
+ }
+ 
+ user?.name?.uppercased() ?? "Anonymous"
+ 
+ Use functional programming: compactMap()
+ 
+ Warning and error directive: #warning() #error()
+ */
 
